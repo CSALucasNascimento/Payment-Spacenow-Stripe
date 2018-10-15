@@ -14,7 +14,7 @@ export default class AddPost extends Component {
     getInitialState = () => ({
         id: '',
         title: '',
-        author: '',
+        author: ''
     });
 
     handleChange = (field, event) => {

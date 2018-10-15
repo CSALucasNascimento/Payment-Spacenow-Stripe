@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import PropTypes from 'prop-types';
+
 import './App.css';
 
 import AllAccsCountry from "./Components/AllAccsCountry";
+import AllAccFields from "./Components/AllAccFields";
 
 import AWSAppSyncClient from "aws-appsync";
 import { Rehydrated } from 'aws-appsync-react';
 import { graphql, ApolloProvider, compose } from 'react-apollo';
 import AppSync from './aws-exports.js';
 import AllAccsCountryQuery from './Queries/AllAccsCountryQuery';
+import AllAccFieldsQuery from './Queries/AllAccFieldsQuery';
 
 const client = new AWSAppSyncClient({
     url: AppSync.aws_appsync_graphqlEndpoint,
@@ -20,17 +23,33 @@ const client = new AWSAppSyncClient({
 });
 
 class App extends Component {
+
+    static propTypes = {
+        accCountryFieldsId: PropTypes.number
+      };
+
+    constructor(props) {
+        super(props);
+        this.handler = this.handler.bind(this)
+        this.state = this.getInitialState();
+    }
+
+    getInitialState = () => ({
+        accCountryFieldsId: 1
+    });
+    
+    handler = (event) => {
+        event.preventDefault()
+        this.setState({
+            accCountryFieldsId: 1
+        });
+    }
+
     render() {
         return (
         <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <h1 className="App-title">Welcome to React</h1>
-            </header>
-            <p className="App-intro">
-                To get started, edit <code>src/App.js</code> and save to reload.
-            </p>
-            <AllAccsCountryWithData />
+            <AllAccsCountryWithData onSelectTypeCountry={this.handler}/>
+            <AllAccFieldsWithData />
         </div>
         );
     }
@@ -46,6 +65,18 @@ const AllAccsCountryWithData = compose(
         })
     })
 )(AllAccsCountry);
+
+const AllAccFieldsWithData = compose(
+    graphql(AllAccFieldsQuery, {
+        options: (props) => ({
+            fetchPolicy: 'cache-and-network',
+            variables: { accCountryFieldsId }
+        }),
+        props: (props) => ({
+            accFields: props.data.getAllAccFields,
+        })
+    })
+)(AllAccFields);
 
 const WithProvider = () => (
     <ApolloProvider client={client}>

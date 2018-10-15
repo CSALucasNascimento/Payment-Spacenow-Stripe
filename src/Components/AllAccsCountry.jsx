@@ -2,8 +2,21 @@ import React, { Component } from "react";
 
 export default class AllAccsCountry extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = this.getInitialState();
+    }
+
     static defaultProps = {
-        accsCountry: []
+        accsCountry: [],
+        onChange: () => null
+    }
+
+    getInitialState = () => ({
+        id: ''
+    });
+
+    handleChange = (field, event) => {
     }
 
     renderAccsCountry = (accsCountry) => {
@@ -12,13 +25,13 @@ export default class AllAccsCountry extends Component {
                 <td>{accsCountry.type}</td>
                 <td>{accsCountry.country}</td>
                 <td>{accsCountry.enabled}</td>
+                <td><button onClick={this.handleChange.bind(this, accsCountry.id)} >{accsCountry.type} {accsCountry.country}</button></td>
             </tr>
         );
     }
 
     render() {
         const { accsCountry } = this.props;
-        console.log(accsCountry)
 
         return (<table width="100%">
             <thead>
@@ -26,6 +39,7 @@ export default class AllAccsCountry extends Component {
                     <th>type</th>
                     <th>country</th>
                     <th>enabled</th>
+                    <th>CHANGE</th>
                 </tr>
             </thead>
             <tbody>
