@@ -4,17 +4,13 @@ export default class AllAccsCountry extends Component {
 
     constructor(props) {
         super(props);
-        this.state = this.getInitialState();
+        
         this.handleChange = this.handleChange.bind(this);
     }
 
     static defaultProps = {
         accsCountry: []
     }
-
-    getInitialState = () => ({
-        accCountryFieldsId: ''
-    });
 
     handleChange = (event) => {
         this.setState({ accCountryFieldsId: event.target.value });
