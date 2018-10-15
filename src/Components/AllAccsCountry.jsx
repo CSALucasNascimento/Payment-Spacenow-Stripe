@@ -5,27 +5,29 @@ export default class AllAccsCountry extends Component {
     constructor(props) {
         super(props);
         this.state = this.getInitialState();
+        this.handleChange = this.handleChange.bind(this);
     }
 
     static defaultProps = {
-        accsCountry: [],
-        onChange: () => null
+        accsCountry: []
     }
 
     getInitialState = () => ({
-        id: ''
+        accCountryFieldsId: ''
     });
 
-    handleChange = (field, event) => {
+    handleChange = (event) => {
+        this.setState({ accCountryFieldsId: event.target.value });
     }
 
     renderAccsCountry = (accsCountry) => {
+        const accCountryFieldsId = this.props.accCountryFieldsId;
         return (
             <tr key={accsCountry.id}>
                 <td>{accsCountry.type}</td>
                 <td>{accsCountry.country}</td>
                 <td>{accsCountry.enabled}</td>
-                <td><button onClick={this.handleChange.bind(this, accsCountry.id)} >{accsCountry.type} {accsCountry.country}</button></td>
+                <td><input value={accCountryFieldsId} onChange={this.handleChange} /></td>
             </tr>
         );
     }

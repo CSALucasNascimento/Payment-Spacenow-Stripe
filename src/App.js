@@ -26,7 +26,11 @@ class App extends Component {
 
     static propTypes = {
         accCountryFieldsId: PropTypes.number
-      };
+    };
+
+    static defaultProps = {
+        accCountryFieldsId: 1
+    }
 
     constructor(props) {
         super(props);
@@ -46,9 +50,11 @@ class App extends Component {
     }
 
     render() {
+        const accCountryFieldsId = this.state.accCountryFieldsId;
+        console.log(accCountryFieldsId)
         return (
         <div className="App">
-            <AllAccsCountryWithData onSelectTypeCountry={this.handler}/>
+            <AllAccsCountryWithData />
             <AllAccFieldsWithData />
         </div>
         );
@@ -70,7 +76,7 @@ const AllAccFieldsWithData = compose(
     graphql(AllAccFieldsQuery, {
         options: (props) => ({
             fetchPolicy: 'cache-and-network',
-            variables: { accCountryFieldsId }
+            variables: { accCountryFieldsId: props.accCountryFieldsId }
         }),
         props: (props) => ({
             accFields: props.data.getAllAccFields,
