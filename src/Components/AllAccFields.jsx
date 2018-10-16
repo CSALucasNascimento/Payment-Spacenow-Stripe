@@ -3,7 +3,7 @@ import React, { Component } from "react";
 export default class AllAccFields extends Component {
 
     static defaultProps = {
-        accFields: [],
+        accFields: []
     }
 
     renderAccFields = (accFields) => {
@@ -17,7 +17,6 @@ export default class AllAccFields extends Component {
 
     render() {
         const { accFields } = this.props;
-        console.log(accFields)
 
         return (<table width="100%">
             <thead>

@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import './App.css';
 
-import AllAccsCountry from "./Components/AllAccsCountry";
-import AllAccFields from "./Components/AllAccFields";
-
-import AWSAppSyncClient from "aws-appsync";
+import AWSAppSyncClient from 'aws-appsync';
 import { Rehydrated } from 'aws-appsync-react';
 import { graphql, ApolloProvider, compose } from 'react-apollo';
 import AppSync from './aws-exports.js';
-import AllAccsCountryQuery from './Queries/AllAccsCountryQuery';
+
+// Components
+import AllAccCountries from './Components/AllAccCountries';
+import AllAccTypes from './Components/AllAccTypes';
+import AllAccFields from './Components/AllAccFields';
+
+// Queries
+import AllAccCountriesQuery from './Queries/AllAccCountriesQuery';
 import AllAccFieldsQuery from './Queries/AllAccFieldsQuery';
+import AllAccTypesQuery from './Queries/AllAccTypesQuery';
 
 const client = new AWSAppSyncClient({
     url: AppSync.aws_appsync_graphqlEndpoint,
@@ -24,62 +28,69 @@ const client = new AWSAppSyncClient({
 
 class App extends Component {
 
-    static propTypes = {
-        accCountryFieldsId: PropTypes.number
-    };
-
-    static defaultProps = {
-        accCountryFieldsId: 1
-    }
-
     constructor(props) {
         super(props);
-        this.handler = this.handler.bind(this)
         this.state = this.getInitialState();
     }
 
     getInitialState = () => ({
-        accCountryFieldsId: 1
+        countryId: 1,
+        typeId: 1
     });
-    
-    handler = (event) => {
-        event.preventDefault()
-        this.setState({
-            accCountryFieldsId: 1
-        });
+
+    handleCountry = (countryId) => {
+        this.setState({countryId: countryId});
+    }
+
+    handleType = (typeId) => {
+        this.setState({typeId: typeId});
     }
 
     render() {
-        const accCountryFieldsId = this.state.accCountryFieldsId;
-        console.log(accCountryFieldsId)
+
         return (
         <div className="App">
-            <AllAccsCountryWithData />
-            <AllAccFieldsWithData />
+            <AllAccCountriesWithData onSelectCountry={this.handleCountry}/>
+            <AllAccTypesWithData onSelectType={this.handleType}/>
+            <AllAccFieldsWithData/>
         </div>
         );
     }
 }
 
-const AllAccsCountryWithData = compose(
-    graphql(AllAccsCountryQuery, {
-        options: {
+const AllAccCountriesWithData = compose(
+    graphql(AllAccCountriesQuery, {
+        options: () => ({
             fetchPolicy: 'cache-and-network'
-        },
+        }),
         props: (props) => ({
-            accsCountry: props.data.getAllAccsCountry
+            accCountries: props.data.getAllAccCountries
         })
     })
-)(AllAccsCountry);
+)(AllAccCountries);
+
+const AllAccTypesWithData = compose(
+    graphql(AllAccTypesQuery, {
+        options: () => ({
+            fetchPolicy: 'cache-and-network'
+        }),
+        props: (props) => ({
+            accTypes: props.data.getAllAccTypes
+        })
+    })
+)(AllAccTypes);
 
 const AllAccFieldsWithData = compose(
     graphql(AllAccFieldsQuery, {
         options: (props) => ({
             fetchPolicy: 'cache-and-network',
-            variables: { accCountryFieldsId: props.accCountryFieldsId }
+            variables: { 
+                accCountryId: 1,
+                accTypeId: 1
+            }
         }),
         props: (props) => ({
-            accFields: props.data.getAllAccFields,
+            accFields: props.data.getAllAccFields
         })
     })
 )(AllAccFields);

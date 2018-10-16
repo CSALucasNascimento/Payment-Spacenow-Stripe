@@ -1,11 +1,9 @@
 import gql from 'graphql-tag';
 export default gql`
-  query AllAccsCountry {
-    getAllAccsCountry {
+  query AllAccCountries {
+    getAllAccCountries {
       id
-      type
       country
-      enabled
     }
   }
 `;
