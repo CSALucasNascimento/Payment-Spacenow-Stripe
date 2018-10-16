@@ -47,12 +47,12 @@ class App extends Component {
     }
 
     render() {
-
+        const { countryId, typeId } = this.state;
         return (
         <div className="App">
             <AllAccCountriesWithData onSelectCountry={this.handleCountry}/>
             <AllAccTypesWithData onSelectType={this.handleType}/>
-            <AllAccFieldsWithData/>
+            <AllAccFieldsWithData countryId={countryId} typeId={typeId}/>
         </div>
         );
     }
@@ -84,9 +84,10 @@ const AllAccFieldsWithData = compose(
     graphql(AllAccFieldsQuery, {
         options: (props) => ({
             fetchPolicy: 'cache-and-network',
+            refetchQueries: AllAccFieldsQuery,
             variables: { 
-                accCountryId: 1,
-                accTypeId: 1
+                accCountryId: props.countryId,
+                accTypeId: props.typeId
             }
         }),
         props: (props) => ({
