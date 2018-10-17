@@ -4,20 +4,16 @@ import './App.css';
 
 import AWSAppSyncClient from 'aws-appsync';
 import { Rehydrated } from 'aws-appsync-react';
-import { graphql, ApolloProvider, compose } from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
+// import { graphql, ApolloProvider, compose } from 'react-apollo';
 import { AWS_CONFIG } from './aws-exports.js';
 
 // Components
-import AllAccCountries from './Components/AllAccCountries';
-import AllAccTypes from './Components/AllAccTypes';
-import AllAccFields from './Components/AllAccFields';
+import Account from './Components/Account';
+// import AllAccFields from './Components/AllAccFields';
+// import AllAccFieldsQuery from './Queries/AllAccFieldsQuery';
 
-// Queries
-import AllAccCountriesQuery from './Queries/AllAccCountriesQuery';
-import AllAccFieldsQuery from './Queries/AllAccFieldsQuery';
-import AllAccTypesQuery from './Queries/AllAccTypesQuery';
-
-import { Container, FormGroup, Form, Col, Row, Label, Input, Button, Card, CardHeader, CardBody } from 'reactstrap';
+import { Container, Form, Col, Row, Button, Card, CardHeader, CardBody } from 'reactstrap';
 
 const client = new AWSAppSyncClient({
     url: AWS_CONFIG.AWS_APPSYNC.STRIPE_ACC.GRAPHQL_ENDPOINT,
@@ -29,33 +25,6 @@ const client = new AWSAppSyncClient({
 });
 
 class App extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = this.getInitialState();
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    getInitialState = () => ({
-        countryId: 1,
-        typeId: 1
-    });
-
-    handleCountry = (countryId) => {
-        this.setState({countryId: countryId});
-    }
-
-    handleType = (typeId) => {
-        this.setState({typeId: typeId});
-    }
-
-    handleChange = (field, event) => {
-        const { target: { value } } = event;
-
-        this.setState({
-            [field]: value
-        });
-    }
 
 
     handleButtonClick = async() => {
@@ -92,7 +61,7 @@ class App extends Component {
             }
           }
 
-        const res = await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
+        await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
             method: "post",
             headers: {
                 Accept: "application/json",
@@ -101,7 +70,6 @@ class App extends Component {
             body: JSON.stringify(account)
         })
 
-        console.log(res.json());
     }
 
     async handleSubmit(event) {
@@ -110,122 +78,53 @@ class App extends Component {
     }
 
     render() {
-        const { countryId, typeId } = this.state;
+
         return (
             <Container className="App">
                 <Row>
                     <Col xl={12} lg={12} md={12}>
                         <Card>
-                            <CardHeader>Identity</CardHeader>
+                            <CardHeader>Account</CardHeader>
                             <CardBody>
                                 <Form onSubmit={this.handleSubmit}>
-                                    <FormGroup>
-                                        <Label for="email">Email</Label>
-                                        <Input type="text" name="email" id="email" placeholder="Email" onChange={this.handleChange.bind(this, `email`)}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <AllAccCountriesWithData onSelectCountry={this.handleCountry}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="type">Country</Label>
-                                        <Input type="select" name="type">
-                                            <option>Custom</option>
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup check row>
-                                        <Button>Submit</Button>
-                                    </FormGroup>
+                                    <Account />
                                 </Form>
                             </CardBody>
                         </Card>
                     </Col>
                 </Row>
 
-                <Row>
-                    <Col xl={12} lg={12} md={12}>
-                        <Card>
-                            <CardHeader>Add/Edit Identity Details</CardHeader>
-                            <CardBody>
-                                <Form onSubmit={this.handleSubmit}>
-                                    <FormGroup>
-                                        <Label for="email">Email</Label>
-                                        <Input type="text" name="email" id="email" placeholder="Email" onChange={this.handleChange.bind(this, `email`)}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <AllAccCountriesWithData onSelectCountry={this.handleCountry}/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="type">Country</Label>
-                                        <Input type="select" name="type">
-                                            <option>Custom</option>
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup check row>
-                                        <Button>Submit</Button>
-                                    </FormGroup>
-                                </Form>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                
 
 
-                <Row form>
-                    <Col md={6}>
-                        <AllAccCountriesWithData onSelectCountry={this.handleCountry}/>
-                    </Col>
-                    <Col md={6}>
-                        <AllAccTypesWithData onSelectType={this.handleType}/>
-                    </Col>
-                </Row>
-                <Row form>
+                {/* <Row form>
                     <AllAccFieldsWithData countryId={countryId} typeId={typeId}/>
-                </Row>
+                </Row> */}
 
 
                 <Button onClick={this.handleButtonClick}>Call API</Button>
+
             </Container>
+
         );
     }
 }
 
-const AllAccCountriesWithData = compose(
-    graphql(AllAccCountriesQuery, {
-        options: () => ({
-            fetchPolicy: 'cache-and-network'
-        }),
-        props: (props) => ({
-            accCountries: props.data.getAllAccCountries
-        })
-    })
-)(AllAccCountries);
-
-const AllAccTypesWithData = compose(
-    graphql(AllAccTypesQuery, {
-        options: () => ({
-            fetchPolicy: 'cache-and-network'
-        }),
-        props: (props) => ({
-            accTypes: props.data.getAllAccTypes
-        })
-    })
-)(AllAccTypes);
-
-const AllAccFieldsWithData = compose(
-    graphql(AllAccFieldsQuery, {
-        options: (props) => ({
-            fetchPolicy: 'cache-and-network',
-            refetchQueries: AllAccFieldsQuery,
-            variables: { 
-                accCountryId: props.countryId,
-                accTypeId: props.typeId
-            }
-        }),
-        props: (props) => ({
-            accFields: props.data.getAllAccFields
-        })
-    })
-)(AllAccFields);
+// const AllAccFieldsWithData = compose(
+//     graphql(AllAccFieldsQuery, {
+//         options: (props) => ({
+//             fetchPolicy: 'cache-and-network',
+//             refetchQueries: AllAccFieldsQuery,
+//             variables: { 
+//                 accCountryId: props.countryId,
+//                 accTypeId: props.typeId
+//             }
+//         }),
+//         props: (props) => ({
+//             accFields: props.data.getAllAccFields
+//         })
+//     })
+// )(AllAccFields);
 
 const WithProvider = () => (
     <ApolloProvider client={client}>
