@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormGroup, Label, Input } from 'reactstrap';
 
 export default class AllAccTypes extends Component {
 
@@ -25,15 +26,14 @@ export default class AllAccTypes extends Component {
     render() {
         const { accTypes } = this.props;
         return (
-            <div>
-                <label>Type
-                    <select
-                        onChange={this.handleChange}
-                    >
-                    {[].concat(accTypes).sort((a, b) => b.id - a.id).map(this.renderAccTypes)}
-                    </select>
-                </label>
-            </div>
+            <FormGroup>
+                <Label for="type">Type</Label>
+                <Input type="select" id="type" name="type"
+                    onChange={this.handleChange}
+                >
+                {[].concat(accTypes).sort((a, b) => a.id - b.id).map(this.renderAccTypes)}
+                </Input>
+            </FormGroup>
         )
     }
 }

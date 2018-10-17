@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { FormGroup, Label, Input } from 'reactstrap';
 
 export default class AllAccCountries extends Component {
 
@@ -17,22 +18,23 @@ export default class AllAccCountries extends Component {
 
     renderAccCountries = (accCountries) => {
         return (
-            <option key={accCountries.id} value={accCountries.id}>{accCountries.country}</option>
+            <option key={accCountries.id} value={accCountries.id}>{accCountries.longName}</option>
         );
     }
 
     render() {
         const { accCountries } = this.props;
         return (
-            <div>
-                <label>Country
-                    <select
+            <FormGroup>
+                <Label for="country">Country</Label>
+               
+                    <Input type="select" id="country" name="country"
                         onChange={this.handleChange}
                     >
-                    {[].concat(accCountries).sort((a, b) => b.id - a.id).map(this.renderAccCountries)}
-                    </select>
-                </label>
-            </div>
+                    {[].concat(accCountries).sort((a, b) => a.id - b.id).map(this.renderAccCountries)}
+                    </Input>
+   
+            </FormGroup>
         )
     }
 }

@@ -1,33 +1,43 @@
 import React, { Component } from "react";
+import { Col, FormGroup, Label, Input } from 'reactstrap';
 
 export default class AllAccFields extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = this.getInitialState();
+      }
 
     static defaultProps = {
         accFields: []
     }
 
+    getInitialState = () => ({});
+
+    handleChange = (field, event) => {
+        const { target: { value } } = event;
+
+        this.setState({
+            [field]: value
+        });
+    }
+
     renderAccFields = (accFields) => {
         return (
-            <tr key={accFields.id}>
-                <td>{accFields.fieldName}</td>
-                <td>{accFields.fieldLabel}</td>
-            </tr>
+            <Col md={6} key={accFields.id}>
+                <FormGroup>
+                    <Label for={accFields.fieldName}>{accFields.fieldLabel}</Label>
+                    <Input type="text" name={accFields.fieldName} id={accFields.fieldName} placeholder={accFields.fieldLabel} onChange={this.handleChange.bind(this, `${accFields.fieldName}`)}/>
+                </FormGroup>
+            </Col>
         );
     }
 
     render() {
         const { accFields } = this.props;
 
-        return (<table width="100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Label</th>
-                </tr>
-            </thead>
-            <tbody>
-                {[].concat(accFields).sort((a, b) => b.id - a.id).map(this.renderAccFields)}
-            </tbody>
-        </table>);
+        return (
+            [].concat(accFields).sort((a, b) => a.id - b.id).map(this.renderAccFields)
+        );
     }
 }
