@@ -5,13 +5,10 @@ import './App.css';
 import AWSAppSyncClient from 'aws-appsync';
 import { Rehydrated } from 'aws-appsync-react';
 import { ApolloProvider } from 'react-apollo';
-// import { graphql, ApolloProvider, compose } from 'react-apollo';
 import { AWS_CONFIG } from './aws-exports.js';
 
 // Components
 import Account from './Components/Account';
-// import AllAccFields from './Components/AllAccFields';
-// import AllAccFieldsQuery from './Queries/AllAccFieldsQuery';
 
 import { Container, Form, Col, Row, Button, Card, CardHeader, CardBody } from 'reactstrap';
 
@@ -39,17 +36,17 @@ class App extends Component {
         this.setState({ account: dataFromChild});
     }
 
-    // await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
-    //     method: "post",
-    //     headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(account)
-    // })
-
-    async handleButtonClick(event) {
+    async handleSubmit(event) {
+        const { account } = this.state;
         event.preventDefault();
+        await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
+            method: "post",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(account)
+        })
     }
 
     render() {
@@ -72,7 +69,7 @@ class App extends Component {
                     </Col>
                 </Row>
 
-                <Button onClick={this.handleButtonClick}>Call API</Button>
+                <Button>Call API</Button>
 
             </Container>
 
