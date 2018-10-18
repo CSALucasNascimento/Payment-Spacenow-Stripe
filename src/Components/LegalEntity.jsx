@@ -87,7 +87,6 @@ export default class LegalEntity extends Component {
     }
 
     renderAccFields = (accFields) => {
-        console.log(accFields);
 
         const { legal_entity } = this.state;
 

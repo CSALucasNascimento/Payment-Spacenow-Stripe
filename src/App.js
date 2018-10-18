@@ -29,7 +29,7 @@ class App extends Component {
     }
 
     getInitialState = () => ({
-        account: ''
+        account: {}
     });
 
     myCallback = (dataFromChild) => {
@@ -39,7 +39,7 @@ class App extends Component {
     async handleSubmit(event) {
         const { account } = this.state;
         event.preventDefault();
-        await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
+        const resp = await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
             method: "post",
             headers: {
                 Accept: "application/json",
@@ -47,13 +47,11 @@ class App extends Component {
             },
             body: JSON.stringify(account)
         })
+        const body = resp.json();
+        console.log(body)
     }
 
     render() {
-        const { account } = this.state;
-        
-        console.log(account);
-
         return (
             <Container className="App">
                 <Row>
@@ -72,7 +70,6 @@ class App extends Component {
                 <Button>Call API</Button>
 
             </Container>
-
         );
     }
 }

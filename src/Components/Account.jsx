@@ -26,9 +26,22 @@ export default class Account extends Component {
             country: '1',
             email: '',
             legal_entity: '',
-            external_account: ''
+            external_account: '',
+            tos_acceptance: {
+                ip: '',
+                date: ''
+            }
         }
     });
+
+    componentWillMount = async () => {
+        const { account } = this.state;
+        const data = await fetch(`https://json.geoiplookup.io`);
+        const body = await data.json();
+        account.tos_acceptance.ip = body.ip;
+        account.tos_acceptance.date = Date.now();
+        this.setState({ account });
+    }
 
     handleCountry = (country) => {
         const { account } = this.state;
@@ -98,7 +111,7 @@ export default class Account extends Component {
                             <Card>
                                 <CardHeader>External Accounts</CardHeader>
                                 <CardBody>
-                                    <ExternalAccount callbackFromParent={this.myCallbackExternalAccount}/>
+                                    <ExternalAccount callbackFromParent={this.myCallbackExternalAccount} accCountryId={account.country}/>
                                 </CardBody>
                             </Card>
                         </Col>

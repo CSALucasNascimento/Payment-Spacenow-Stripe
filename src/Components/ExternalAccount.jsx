@@ -1,13 +1,17 @@
 import React, { Component } from "react";
+import { graphql, compose } from 'react-apollo';
 import { Row, Col, FormGroup, Label, Input } from 'reactstrap';
 import RoutingNumber from './RoutingNumber';
+
+// Queries
+import AllRNFieldsQuery from '../Queries/AllRNFieldsQuery';
  
 export default class ExternalAccount extends Component {
 
     constructor(props) {
         super(props);
         this.state = this.getInitialState();
-      }
+    }
 
     getInitialState = () => ({
         external_account: {
@@ -37,13 +41,14 @@ export default class ExternalAccount extends Component {
     render() {
 
         const { external_account } = this.state;
+        const { accCountryId } = this.props;
 
         return (
             <Row form>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="country">Country</Label>
-                        <Input type="text" name='country' id='country' placeholder="Country" value={external_account.country} onChange={this.handleChange.bind(this, `country`)} readOnly/>
+                        <Input type="text" name='country' id='country' placeholder="Country" value={accCountryId} onChange={this.handleChange.bind(this, `country`)} readOnly/>
                     </FormGroup>
                 </Col>
                 <Col md={6}>
@@ -53,7 +58,7 @@ export default class ExternalAccount extends Component {
                     </FormGroup>
                 </Col>
                 <Col md={6}>
-                    <RoutingNumber callbackFromParent={this.myCallback}/>
+                    <RoutingNumberWithData callbackFromParent={this.myCallback} accCountryId={accCountryId} />
                 </Col>
                 <Col md={6}>
                     <FormGroup>
@@ -65,3 +70,18 @@ export default class ExternalAccount extends Component {
         );
     }
 }
+
+const RoutingNumberWithData = compose(
+    graphql(AllRNFieldsQuery, {
+        options: (props) => ({
+            fetchPolicy: 'cache-and-network',
+            refetchQueries: AllRNFieldsQuery,
+            variables: { 
+                accCountryId: props.accCountryId
+            }
+        }),
+        props: (props) => ({
+            accFields: props.data.getAllRNFields
+        })
+    })
+)(RoutingNumber);
