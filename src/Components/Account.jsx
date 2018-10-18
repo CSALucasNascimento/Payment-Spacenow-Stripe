@@ -11,6 +11,7 @@ import AllAccCountries from './AllAccCountries';
 
 // Queries
 import AllAccCountriesQuery from '../Queries/AllAccCountriesQuery';
+import AllAccFieldsQuery from '../Queries/AllAccFieldsQuery';
  
 export default class Account extends Component {
 
@@ -22,21 +23,42 @@ export default class Account extends Component {
     getInitialState = () => ({
         account: {
             type: 'custom',
-            country: '',
-            email: ''
+            country: '1',
+            email: '',
+            legal_entity: '',
+            external_account: ''
         }
     });
 
     handleCountry = (country) => {
-        this.setState({country: country});
+        const { account } = this.state;
+        account.country = country;
+        this.setState({ account });
+        this.props.callbackFromParent(account);
+    }
+
+    myCallbackLegalEntity = (dataFromChild) => {
+        const { account } = this.state;
+        account.legal_entity = dataFromChild;
+        this.setState({ account });
+        this.props.callbackFromParent(account);
+    }
+
+    myCallbackExternalAccount = (dataFromChild) => {
+        const { account } = this.state;
+        account.external_account = dataFromChild;
+        this.setState({ account });
+        this.props.callbackFromParent(account);
     }
 
     handleChange = (field, event) => {
+        const { account } = this.state;
         const { target: { value } } = event;
-
+        account[field] = value;
         this.setState({
-            [field]: value
+            account
         });
+        this.props.callbackFromParent(account);
     }
 
     render() {
@@ -55,7 +77,7 @@ export default class Account extends Component {
                         <Col md={12}>
                             <FormGroup>
                                 <Label for="email">Email</Label>
-                                <Input type="text" name='email' id='email' placeholder="Email" onChange={this.handleChange.bind(this, `${account.email}`)} />
+                                <Input type="text" name='email' id='email' placeholder="Email" value={account.email} onChange={this.handleChange.bind(this, `email`)} />
                             </FormGroup>
                         </Col>
                     </Row>
@@ -66,7 +88,7 @@ export default class Account extends Component {
                             <Card>
                                 <CardHeader>Legal Entity</CardHeader>
                                 <CardBody>
-                                    <LegalEntity />
+                                    <LegalEntityWithData callbackFromParent={this.myCallbackLegalEntity} accCountryId={account.country} accTypeId={account.legal_entity.type}/>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -76,7 +98,7 @@ export default class Account extends Component {
                             <Card>
                                 <CardHeader>External Accounts</CardHeader>
                                 <CardBody>
-                                    <ExternalAccount />
+                                    <ExternalAccount callbackFromParent={this.myCallbackExternalAccount}/>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -86,6 +108,22 @@ export default class Account extends Component {
         );
     }
 }
+
+const LegalEntityWithData = compose(
+    graphql(AllAccFieldsQuery, {
+        options: (props) => ({
+            fetchPolicy: 'cache-and-network',
+            refetchQueries: AllAccFieldsQuery,
+            variables: { 
+                accCountryId: props.accCountryId,
+                accTypeId: props.accTypeId
+            }
+        }),
+        props: (props) => ({
+            accFields: props.data.getAllAccFields
+        })
+    })
+)(LegalEntity);
 
 const AllAccCountriesWithData = compose(
     graphql(AllAccCountriesQuery, {

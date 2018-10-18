@@ -17,11 +17,11 @@ export default class DOB extends Component {
     });
 
     handleChange = (field, event) => {
+        const { dob } = this.state;
         const { target: { value } } = event;
-
-        this.setState({
-            [field]: value
-        });
+        dob[field] = value;
+        this.setState({ dob });
+        this.props.callbackFromParent(dob);
     }
 
     render() {
@@ -30,9 +30,9 @@ export default class DOB extends Component {
 
         return (
             <InputGroup>
-                <Input type="text" name='day' id='day' placeholder="DD" onChange={this.handleChange.bind(this, `${dob.day}`)}/>
-                <Input type="text" name='month' id='month' placeholder="MM" onChange={this.handleChange.bind(this, `${dob.month}`)}/>
-                <Input type="text" name='year' id='year' placeholder="YYYY" onChange={this.handleChange.bind(this, `${dob.year}`)}/>
+                <Input type="text" name='day' id='day' placeholder="DD" value={dob.day} onChange={this.handleChange.bind(this, `day`)}/>
+                <Input type="text" name='month' id='month' placeholder="MM" value={dob.month} onChange={this.handleChange.bind(this, `month`)}/>
+                <Input type="text" name='year' id='year' placeholder="YYYY" value={dob.year} onChange={this.handleChange.bind(this, `year`)}/>
             </InputGroup>
         );
     }

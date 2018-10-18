@@ -16,11 +16,11 @@ export default class RoutingNumber extends Component {
     });
 
     handleChange = (field, event) => {
+        const { routing_number } = this.state;
         const { target: { value } } = event;
-
-        this.setState({
-            [field]: value
-        });
+        routing_number[field] = value;
+        this.setState({ routing_number });
+        this.props.callbackFromParent(routing_number);
     }
 
     render() {
@@ -32,13 +32,13 @@ export default class RoutingNumber extends Component {
                 <Col md={6}>
                     <FormGroup>
                         <Label for="field_1">Field 1</Label>
-                        <Input type="text" name='field_1' id='field_1' placeholder="Field 1" onChange={this.handleChange.bind(this, `${routing_number.field_1}`)} />
+                        <Input type="text" name='field_1' id='field_1' placeholder="Field 1" value={routing_number.field_1} onChange={this.handleChange.bind(this, `field_1`)} />
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="field_2">Field 2</Label>
-                        <Input type="text" name='field_2' id='field_2' placeholder="Field 2" onChange={this.handleChange.bind(this, `${routing_number.field_2}`)} />
+                        <Input type="text" name='field_2' id='field_2' placeholder="Field 2" value={routing_number.field_2} onChange={this.handleChange.bind(this, `field_2`)} />
                     </FormGroup>
                 </Col>
             </Row>

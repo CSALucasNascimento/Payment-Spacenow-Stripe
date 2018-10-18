@@ -5,6 +5,7 @@ export default gql`
       id
       shortName
       longName
+      currency
     }
   }
 `;

@@ -18,11 +18,11 @@ export default class Address extends Component {
     });
 
     handleChange = (field, event) => {
+        const { address } = this.state;
         const { target: { value } } = event;
-
-        this.setState({
-            [field]: value
-        });
+        address[field] = value;
+        this.setState({ address });
+        this.props.callbackFromParent(address);
     }
 
     render() {
@@ -34,25 +34,25 @@ export default class Address extends Component {
                 <Col md={6}>
                     <FormGroup>
                         <Label for="city">City</Label>
-                        <Input type="text" name='city' id='city' placeholder="City" onChange={this.handleChange.bind(this, `${address.city}`)} />
+                        <Input type="text" name='city' id='city' placeholder="City" value={address.city} onChange={this.handleChange.bind(this, `city`)} />
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="line_1">Adress</Label>
-                        <Input type="text" name='line_1' id='line_1' placeholder="Address" onChange={this.handleChange.bind(this, `${address.line_1}`)} />
+                        <Input type="text" name='line_1' id='line_1' placeholder="Address" value={address.line_1} onChange={this.handleChange.bind(this, `line_1`)} />
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="postal_code">Post Code</Label>
-                        <Input type="text" name='postal_code' id='postal_code' placeholder="Post Code" onChange={this.handleChange.bind(this, `${address.postal_code}`)} />
+                        <Input type="text" name='postal_code' id='postal_code' placeholder="Post Code" value={address.postal_code} onChange={this.handleChange.bind(this, `postal_code`)} />
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="state">State</Label>
-                        <Input type="text" name='state' id='state' placeholder="State" onChange={this.handleChange.bind(this, `${address.state}`)} />
+                        <Input type="text" name='state' id='state' placeholder="State" value={address.state} onChange={this.handleChange.bind(this, `state`)} />
                     </FormGroup>
                 </Col>
             </Row>

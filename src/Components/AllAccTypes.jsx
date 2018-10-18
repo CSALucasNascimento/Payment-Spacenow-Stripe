@@ -28,10 +28,8 @@ export default class AllAccTypes extends Component {
         return (
             <FormGroup>
                 <Label for="type">Type</Label>
-                <Input type="select" id="type" name="type"
-                    onChange={this.handleChange}
-                >
-                {[].concat(accTypes).sort((a, b) => a.id - b.id).map(this.renderAccTypes)}
+                <Input type="select" id="type" name="type" onChange={this.handleChange} >
+                    {[].concat(accTypes).sort((a, b) => a.id - b.id).map(this.renderAccTypes)}
                 </Input>
             </FormGroup>
         )

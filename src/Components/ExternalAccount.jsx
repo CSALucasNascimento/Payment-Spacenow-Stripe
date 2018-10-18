@@ -14,16 +14,24 @@ export default class ExternalAccount extends Component {
             object: 'bank_acount',
             country: '',
             currency: '',
+            routing_number: '',
             account_number: ''
         }
     });
 
-    handleChange = (field, event) => {
-        const { target: { value } } = event;
+    myCallback = (dataFromChild) => {
+        const { external_account } = this.state;
+        external_account.routing_number = dataFromChild;
+        this.setState({ external_account })
+        this.props.callbackFromParent(external_account);
+    }
 
-        this.setState({
-            [field]: value
-        });
+    handleChange = (field, event) => {
+        const { external_account } = this.state;
+        const { target: { value } } = event;
+        external_account[field] = value;
+        this.setState({ external_account });
+        this.props.callbackFromParent(external_account);
     }
 
     render() {
@@ -35,22 +43,22 @@ export default class ExternalAccount extends Component {
                 <Col md={6}>
                     <FormGroup>
                         <Label for="country">Country</Label>
-                        <Input type="text" name='country' id='country' placeholder="Country" onChange={this.handleChange.bind(this, `${external_account.country}`)} />
+                        <Input type="text" name='country' id='country' placeholder="Country" value={external_account.country} onChange={this.handleChange.bind(this, `country`)} readOnly/>
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="currency">Currency</Label>
-                        <Input type="text" name='currency' id='currency' placeholder="Currency" onChange={this.handleChange.bind(this, `${external_account.currency}`)} />
+                        <Input type="text" name='currency' id='currency' placeholder="Currency" value={external_account.currency} onChange={this.handleChange.bind(this, `currency`)} readOnly/>
                     </FormGroup>
                 </Col>
                 <Col md={6}>
-                    <RoutingNumber />
+                    <RoutingNumber callbackFromParent={this.myCallback}/>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
                         <Label for="account_number">Account Number</Label>
-                        <Input type="text" name='account_number' id='account_number' placeholder="Account Number" onChange={this.handleChange.bind(this, `${external_account.account_number}`)} />
+                        <Input type="text" name='account_number' id='account_number' placeholder="Account Number" value={external_account.account_number} onChange={this.handleChange.bind(this, `account_number`)} />
                     </FormGroup>
                 </Col>
             </Row>

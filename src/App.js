@@ -26,58 +26,36 @@ const client = new AWSAppSyncClient({
 
 class App extends Component {
 
-
-    handleButtonClick = async() => {
-        const account = {
-            "type": "custom",
-            "country": "US",
-            "email": "lucas@returnonclick.com.au",
-            "external_account": {
-              "object": "bank_account",
-              "country": "US",
-              "currency": "usd",
-              "routing_number": "110000000",
-              "account_number": "000123456789"
-            },
-            "legal_entity": {
-              "address": {
-                "city": "San Francisco",
-                "line1": "1234 Main Street",
-                "postal_code": 94111,
-                "state": "CA"
-              },
-              "dob": {
-                "day": 20,
-                "month": 5,
-                "year": 1987
-              },
-              "first_name": "Lucas",
-              "last_name": "Nascimento",
-              "type": "individual"
-            },
-            "tos_acceptance": {
-              "date": 1537169116,
-              "ip": "49.181.151.39"
-            }
-          }
-
-        await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
-            method: "post",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(account)
-        })
-
+    constructor(props) {
+        super(props);
+        this.state = this.getInitialState();
     }
 
-    async handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
+    getInitialState = () => ({
+        account: ''
+    });
+
+    myCallback = (dataFromChild) => {
+        this.setState({ account: dataFromChild});
+    }
+
+    // await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
+    //     method: "post",
+    //     headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(account)
+    // })
+
+    async handleButtonClick(event) {
         event.preventDefault();
     }
 
     render() {
+        const { account } = this.state;
+        
+        console.log(account);
 
         return (
             <Container className="App">
@@ -87,20 +65,12 @@ class App extends Component {
                             <CardHeader>Account</CardHeader>
                             <CardBody>
                                 <Form onSubmit={this.handleSubmit}>
-                                    <Account />
+                                    <Account callbackFromParent={this.myCallback} />
                                 </Form>
                             </CardBody>
                         </Card>
                     </Col>
                 </Row>
-
-                
-
-
-                {/* <Row form>
-                    <AllAccFieldsWithData countryId={countryId} typeId={typeId}/>
-                </Row> */}
-
 
                 <Button onClick={this.handleButtonClick}>Call API</Button>
 
@@ -109,22 +79,6 @@ class App extends Component {
         );
     }
 }
-
-// const AllAccFieldsWithData = compose(
-//     graphql(AllAccFieldsQuery, {
-//         options: (props) => ({
-//             fetchPolicy: 'cache-and-network',
-//             refetchQueries: AllAccFieldsQuery,
-//             variables: { 
-//                 accCountryId: props.countryId,
-//                 accTypeId: props.typeId
-//             }
-//         }),
-//         props: (props) => ({
-//             accFields: props.data.getAllAccFields
-//         })
-//     })
-// )(AllAccFields);
 
 const WithProvider = () => (
     <ApolloProvider client={client}>
