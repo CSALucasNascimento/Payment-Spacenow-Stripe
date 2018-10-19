@@ -15,17 +15,14 @@ export default class ExternalAccount extends Component {
 
     getInitialState = () => ({
         external_account: {
-            object: 'bank_acount',
-            country: '',
-            currency: '',
-            routing_number: '',
+            object: 'bank_account',
             account_number: ''
         }
     });
 
     myCallback = (dataFromChild) => {
         const { external_account } = this.state;
-        external_account.routing_number = dataFromChild;
+        external_account['routing_number'] = `${dataFromChild.field_1}${dataFromChild.field_2}`;
         this.setState({ external_account })
         this.props.callbackFromParent(external_account);
     }
@@ -41,24 +38,12 @@ export default class ExternalAccount extends Component {
     render() {
 
         const { external_account } = this.state;
-        const { accCountryId } = this.props;
+        const { countryId } = this.props;
 
         return (
             <Row form>
                 <Col md={6}>
-                    <FormGroup>
-                        <Label for="country">Country</Label>
-                        <Input type="text" name='country' id='country' placeholder="Country" value={accCountryId} onChange={this.handleChange.bind(this, `country`)} readOnly/>
-                    </FormGroup>
-                </Col>
-                <Col md={6}>
-                    <FormGroup>
-                        <Label for="currency">Currency</Label>
-                        <Input type="text" name='currency' id='currency' placeholder="Currency" value={external_account.currency} onChange={this.handleChange.bind(this, `currency`)} readOnly/>
-                    </FormGroup>
-                </Col>
-                <Col md={6}>
-                    <RoutingNumberWithData callbackFromParent={this.myCallback} accCountryId={accCountryId} />
+                    <RoutingNumberWithData callbackFromParent={this.myCallback} accCountryId={countryId} />
                 </Col>
                 <Col md={6}>
                     <FormGroup>

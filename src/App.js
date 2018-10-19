@@ -36,7 +36,7 @@ class App extends Component {
         this.setState({ account: dataFromChild});
     }
 
-    async handleSubmit(event) {
+    handleClick = async(event) => {
         const { account } = this.state;
         event.preventDefault();
         const resp = await fetch(`${AWS_CONFIG.AWS_API_GATEWAY.STRIPE.API_URL}createcustomaccount`, {
@@ -59,16 +59,14 @@ class App extends Component {
                         <Card>
                             <CardHeader>Account</CardHeader>
                             <CardBody>
-                                <Form onSubmit={this.handleSubmit}>
+                                <Form>
                                     <Account callbackFromParent={this.myCallback} />
                                 </Form>
                             </CardBody>
                         </Card>
                     </Col>
                 </Row>
-
-                <Button>Call API</Button>
-
+                <Button onClick={this.handleClick}>Call API</Button>
             </Container>
         );
     }

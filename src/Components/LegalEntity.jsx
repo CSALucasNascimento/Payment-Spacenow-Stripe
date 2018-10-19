@@ -23,54 +23,45 @@ export default class LegalEntity extends Component {
     }
 
     getInitialState = () => ({
-        legal_entity: {
-            first_name: '',
-            last_name: '',
-            type: '',
-            ssn_last_4: '',
-            business_name: '',
-            business_tax_id: '',
-            personal_id_number: '',
-            dob: '',
-            address: '',
-            personal_address: ''
-        }
+        legal_entity: {},
+        typeId: ''
     });
 
     handleType = (type) => {
         const { legal_entity } = this.state;
-        legal_entity.type = type;
+        legal_entity.type = type.description;
         this.setState({ legal_entity });
-        this.props.callbackFromParent(legal_entity);
+        this.setState({ typeId: type.id });
+        this.props.callbackFromParent(legal_entity, type.id);
     }
 
     myCallbackDOB = (dataFromChild) => {
-        const { legal_entity } = this.state;
-        legal_entity.dob = dataFromChild;
+        const { legal_entity, typeId } = this.state;
+        legal_entity['dob'] = { ...legal_entity['dob'], ...dataFromChild };
         this.setState({ legal_entity });
-        this.props.callbackFromParent(legal_entity);
+        this.props.callbackFromParent(legal_entity, typeId);
     }
 
     myCallbackAddress = (dataFromChild) => {
-        const { legal_entity } = this.state;
-        legal_entity.address = dataFromChild;
+        const { legal_entity, typeId } = this.state;
+        legal_entity['address'] = { ...legal_entity['address'], ...dataFromChild };
         this.setState({ legal_entity });
-        this.props.callbackFromParent(legal_entity);
+        this.props.callbackFromParent(legal_entity, typeId);
     }
 
     myCallbackPersonalAddress = (dataFromChild) => {
-        const { legal_entity } = this.state;
-        legal_entity.personal_address = dataFromChild;
+        const { legal_entity, typeId } = this.state;
+        legal_entity['personal_address'] = { ...legal_entity['personal_address'], ...dataFromChild };
         this.setState({ legal_entity });
-        this.props.callbackFromParent(legal_entity);
+        this.props.callbackFromParent(legal_entity, typeId);
     }
 
     handleChange = (field, event) => {
-        const { legal_entity } = this.state;
+        const { legal_entity, typeId } = this.state;
         const { target: { value } } = event;
         legal_entity[field] = value;
         this.setState({ legal_entity });
-        this.props.callbackFromParent(legal_entity);
+        this.props.callbackFromParent(legal_entity, typeId);
     }
 
     render() {

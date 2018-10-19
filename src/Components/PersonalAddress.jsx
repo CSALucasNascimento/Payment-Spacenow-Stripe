@@ -11,7 +11,7 @@ export default class PersonalAddress extends Component {
     getInitialState = () => ({
         personal_address: {
             city: '',
-            line_1: '',
+            line1: '',
             postal_code: ''
         }
     });
@@ -38,8 +38,8 @@ export default class PersonalAddress extends Component {
                 </Col>
                 <Col md={6}>
                     <FormGroup>
-                        <Label for="line_1">Adress</Label>
-                        <Input type="text" name='line_1' id='line_1' placeholder="Address" value={personal_address.line_1} onChange={this.handleChange.bind(this, `line_1`)} />
+                        <Label for="line1">Adress</Label>
+                        <Input type="text" name='line1' id='line1' placeholder="Address" value={personal_address.line1} onChange={this.handleChange.bind(this, `line1`)} />
                     </FormGroup>
                 </Col>
                 <Col md={6}>

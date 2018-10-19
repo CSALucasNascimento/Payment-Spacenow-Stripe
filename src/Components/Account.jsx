@@ -23,15 +23,20 @@ export default class Account extends Component {
     getInitialState = () => ({
         account: {
             type: 'custom',
-            country: '1',
+            country: '',
             email: '',
             legal_entity: '',
-            external_account: '',
+            external_account: {
+                country: '',
+                currency: ''
+            },
             tos_acceptance: {
                 ip: '',
                 date: ''
             }
-        }
+        },
+        countryId: '',
+        typeId: ''
     });
 
     componentWillMount = async () => {
@@ -39,27 +44,31 @@ export default class Account extends Component {
         const data = await fetch(`https://json.geoiplookup.io`);
         const body = await data.json();
         account.tos_acceptance.ip = body.ip;
-        account.tos_acceptance.date = Date.now();
+        account.tos_acceptance.date = new Date().getTime() / 1000| 0;
         this.setState({ account });
     }
 
     handleCountry = (country) => {
         const { account } = this.state;
-        account.country = country;
+        account.country = country.shortName;
+        account.external_account.country = country.shortName;
+        account.external_account.currency = country.currency;
         this.setState({ account });
+        this.setState({ countryId: country.id })
         this.props.callbackFromParent(account);
     }
 
-    myCallbackLegalEntity = (dataFromChild) => {
+    myCallbackLegalEntity = (dataFromChild, typeId) => {
         const { account } = this.state;
-        account.legal_entity = dataFromChild;
+        account.legal_entity = { ...account.legal_entity, ...dataFromChild};
         this.setState({ account });
+        this.setState({ typeId: typeId });
         this.props.callbackFromParent(account);
     }
 
     myCallbackExternalAccount = (dataFromChild) => {
         const { account } = this.state;
-        account.external_account = dataFromChild;
+        account.external_account = { ...account.external_account, ...dataFromChild };
         this.setState({ account });
         this.props.callbackFromParent(account);
     }
@@ -76,7 +85,7 @@ export default class Account extends Component {
 
     render() {
 
-        const { account } = this.state;
+        const { account, countryId, typeId } = this.state;
 
         return (
             <Row form>
@@ -101,7 +110,7 @@ export default class Account extends Component {
                             <Card>
                                 <CardHeader>Legal Entity</CardHeader>
                                 <CardBody>
-                                    <LegalEntityWithData callbackFromParent={this.myCallbackLegalEntity} accCountryId={account.country} accTypeId={account.legal_entity.type}/>
+                                    <LegalEntityWithData callbackFromParent={this.myCallbackLegalEntity} accCountryId={countryId} accTypeId={typeId}/>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -111,7 +120,7 @@ export default class Account extends Component {
                             <Card>
                                 <CardHeader>External Accounts</CardHeader>
                                 <CardBody>
-                                    <ExternalAccount callbackFromParent={this.myCallbackExternalAccount} accCountryId={account.country}/>
+                                    <ExternalAccountWithData callbackFromParent={this.myCallbackExternalAccount} countryId={countryId}/>
                                 </CardBody>
                             </Card>
                         </Col>
@@ -148,3 +157,14 @@ const AllAccCountriesWithData = compose(
         })
     })
 )(AllAccCountries);
+
+const ExternalAccountWithData = compose(
+    graphql(AllAccCountriesQuery, {
+        options: () => ({
+            fetchPolicy: 'cache-and-network'
+        }),
+        props: (props) => ({
+            accCountries: props.data.getAllAccCountries
+        })
+    })
+)(ExternalAccount);

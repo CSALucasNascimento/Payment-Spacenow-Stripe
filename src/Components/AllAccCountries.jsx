@@ -13,7 +13,9 @@ export default class AllAccCountries extends Component {
     }
 
     handleChange = (e) => {
-        this.props.onSelectCountry(parseInt(e.target.value, 10));
+        const { accCountries } = this.props;
+        const country = accCountries[e.target.value - 1];
+        this.props.onSelectCountry(country);
     }
 
     renderAccCountries = (accCountries) => {

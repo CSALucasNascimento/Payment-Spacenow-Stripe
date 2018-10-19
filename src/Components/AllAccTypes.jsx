@@ -13,7 +13,9 @@ export default class AllAccTypes extends Component {
     }
 
     handleChange = (e) => {
-        this.props.onSelectType(parseInt(e.target.value, 10));
+        const { accTypes } = this.props;
+        const type = accTypes[e.target.value - 1];
+        this.props.onSelectType(type);
     }
     
 
